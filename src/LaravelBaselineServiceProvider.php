@@ -6,12 +6,13 @@ namespace Csatf\LaravelBaseline;
 
 use Csatf\LaravelBaseline\Console\InstallCommand;
 use Csatf\LaravelBaseline\Console\StampVersionCommand;
-use Csatf\LaravelBaseline\Http\Controllers\HealthController;
 use Csatf\LaravelBaseline\Http\Middleware\SecurityHeaders;
+use Csatf\LaravelBaseline\Listeners\CheckDatabaseConnections;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Foundation\Events\DiagnosingHealth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelBaselineServiceProvider extends ServiceProvider
@@ -38,7 +39,7 @@ class LaravelBaselineServiceProvider extends ServiceProvider
 
         $this->registerDashboardGates();
         $this->registerSecurityHeaders();
-        $this->registerHealthRoute();
+        $this->registerHealthChecks();
 
         Blade::directive(
             'appVersion',
@@ -72,13 +73,16 @@ class LaravelBaselineServiceProvider extends ServiceProvider
         });
     }
 
-    protected function registerHealthRoute(): void
+    /**
+     * Hook database-connectivity checks into Laravel's built-in `/up` endpoint
+     * via the DiagnosingHealth event, rather than registering a separate route.
+     */
+    protected function registerHealthChecks(): void
     {
         if (! config('csatf-baseline.health.enabled', true)) {
             return;
         }
 
-        Route::middleware((array) config('csatf-baseline.health.middleware', []))
-            ->get((string) config('csatf-baseline.health.route', '/health'), HealthController::class);
+        Event::listen(DiagnosingHealth::class, CheckDatabaseConnections::class);
     }
 }

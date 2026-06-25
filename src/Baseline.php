@@ -9,9 +9,6 @@ class Baseline
     /** @var (callable(mixed): bool)|null */
     protected $adminResolver = null;
 
-    /** @var array<string, callable(): mixed> */
-    protected array $healthChecks = [];
-
     /**
      * Register the callback that decides whether a user may access protected
      * dashboards (Pulse, Telescope, API docs). Call from a service provider's
@@ -42,23 +39,5 @@ class Baseline
         $emails = array_filter((array) config('csatf-baseline.admin.emails', []));
 
         return $emails !== [] && in_array($user->email ?? null, $emails, true);
-    }
-
-    /**
-     * Register a named health check. The callback should throw on failure.
-     *
-     * @param  callable(): mixed  $check
-     */
-    public function registerHealthCheck(string $name, callable $check): void
-    {
-        $this->healthChecks[$name] = $check;
-    }
-
-    /**
-     * @return array<string, callable(): mixed>
-     */
-    public function healthChecks(): array
-    {
-        return $this->healthChecks;
     }
 }

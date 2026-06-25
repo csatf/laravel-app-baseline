@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static void authorizeAdminUsing(callable $resolver)
  * @method static bool isAdmin(mixed $user)
- * @method static void registerHealthCheck(string $name, callable $check)
- * @method static array<string, callable(): mixed> healthChecks()
  *
  * @see \Csatf\LaravelBaseline\Baseline
  */

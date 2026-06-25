@@ -56,17 +56,25 @@ neither configured, access is denied (fail closed)** — this replaces per-app g
 like a hard-coded admin email or a `viewApiDocs => true`. Remove those per-app
 definitions when adopting.
 
-### 4. Health endpoint
-A `GET /health` route aggregates named checks to `{ "status", "checks" }` (`200`
-healthy, `503` otherwise). Register checks in `boot()`:
+### 4. Database health on `/up`
+Rather than add a parallel endpoint, this hooks Laravel's built-in `/up` health
+check: a `DiagnosingHealth` listener verifies the configured database connections,
+so `/up` returns **200** when they're reachable and **non-200** when they're not.
+Name the connections per app (empty = the default connection):
 
-```php
-Baseline::registerHealthCheck('database', fn () => DB::connection()->getPdo());
-Baseline::registerHealthCheck('redshift', fn () => DB::connection('redshift')->select('SELECT 1'));
+```
+CSATF_HEALTH_CONNECTIONS=pgsql,redshift
 ```
 
-A check signals failure by throwing. Error detail is only included when
-`app.debug` is on. Route/middleware are configurable.
+`/up` is already wired in every app's `bootstrap/app.php`, so there's no new
+route. Disable the DB check with `CSATF_HEALTH_DB_CHECK=false` (back to a plain
+boots-only `/up`).
+
+> Each `/up` hit opens a real connection, and Redshift connects are heavier than
+> Postgres — point uptime monitors at it on the order of 30–60s, not every second.
+> (This makes `/up` a dependency check, not a bare liveness probe; that's the right
+> call for the Forge/Vapor apps, where `/up` is polled by monitors rather than used
+> as a Kubernetes liveness probe.)
 
 ### 5. JSON exception envelope (opt-in)
 Off by default because it changes response shapes. Turn it on in
@@ -82,17 +90,17 @@ requests (web requests are untouched):
 ## Configuration
 
 `config/csatf-baseline.php` keys: `security_headers`, `version`, `admin`,
-`dashboards`, `health`. All env-overridable; the admin resolver and health checks
-are registered in code (kept out of config so `config:cache` stays closure-free).
+`dashboards`, `health`. All env-overridable; the admin resolver is registered in
+code (kept out of config so `config:cache` stays closure-free).
 
 ## Per-app adoption notes
 
-| App | Admin resolver | Notes |
-|-----|----------------|-------|
-| compliance-api | `fn ($u) => $u->is_admin` | already the pilot; drop its `viewPulse`/`viewTelescope` gates |
-| completions | `CSATF_ADMIN_EMAILS` | replaces the hard-coded `admin@csatf.org` gate and `viewApiDocs => true` |
-| stp-docs | `fn ($u) => $u->hasAnyRole([...])` | already has its own SecurityHeaders/AppVersion — remove them in favour of this |
-| team | `fn ($u) => $u->type === UserType::ADMIN` | drop its `viewTelescope` gate |
+| App | Admin resolver | Health connections |
+|-----|----------------|--------------------|
+| compliance-api | `fn ($u) => $u->is_admin` | `pgsql,redshift` |
+| completions | `CSATF_ADMIN_EMAILS` | `pgsql,redshift,redshift_ingest` |
+| stp-docs | `fn ($u) => $u->hasAnyRole([...])` | `pgsql` (also drop its own SecurityHeaders/AppVersion) |
+| team | `fn ($u) => $u->type === UserType::ADMIN` | `pgsql` |
 
 ## Versioning
 

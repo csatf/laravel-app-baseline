@@ -25,8 +25,8 @@ class InstallCommand extends Command
         $this->line('     ...or set CSATF_ADMIN_EMAILS=a@csatf.org,b@csatf.org for the email fallback.');
         $this->line('     (With neither set, dashboard access is denied — fail closed.)');
         $this->line('  2. Remove any per-app viewPulse / viewTelescope / viewApiDocs gate definitions.');
-        $this->line('  3. Register health checks in boot():');
-        $this->line('       Baseline::registerHealthCheck(\'database\', fn () => DB::connection()->getPdo());');
+        $this->line('  3. Set the DB connections that /up should verify:');
+        $this->line('       CSATF_HEALTH_CONNECTIONS=pgsql,redshift   (defaults to the default connection)');
         $this->line('  4. Add `php artisan csatf:version:stamp` to your deploy script; render @appVersion in a view.');
         $this->line('  5. (Optional) JSON error envelope — in bootstrap/app.php withExceptions():');
         $this->line('       \\Csatf\\LaravelBaseline\\Support\\ApiExceptions::register($exceptions);');

@@ -50,13 +50,14 @@ return [
     ],
 
     /*
-     * Health endpoint. Checks are registered in code via
-     * Baseline::registerHealthCheck(); the route aggregates them to ok/error.
+     * Database health. Rather than add a route, a DiagnosingHealth listener
+     * verifies these connections when Laravel's built-in `/up` is hit, so `/up`
+     * returns non-200 if a database is unreachable. Empty = the default
+     * connection. Example: CSATF_HEALTH_CONNECTIONS=pgsql,redshift
      */
     'health' => [
-        'enabled' => true,
-        'route' => env('CSATF_HEALTH_ROUTE', '/health'),
-        'middleware' => ['throttle:60,1'],
+        'enabled' => env('CSATF_HEALTH_DB_CHECK', true),
+        'connections' => array_filter(array_map('trim', explode(',', (string) env('CSATF_HEALTH_CONNECTIONS', '')))),
     ],
 
 ];

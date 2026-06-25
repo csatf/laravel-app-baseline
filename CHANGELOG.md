@@ -13,7 +13,9 @@ All notable changes to this package are documented here. This project adheres to
 - Config-driven dashboard admin gates (`viewPulse`, `viewTelescope`,
   `viewApiDocs`, `viewHorizon`) delegating to a single `Baseline::isAdmin`
   resolver; fail-closed when unconfigured.
-- `/health` endpoint aggregating checks registered via
-  `Baseline::registerHealthCheck()`.
+- Database-connectivity health wired into Laravel's built-in `/up` via a
+  `DiagnosingHealth` listener (config: `health.connections`, e.g.
+  `CSATF_HEALTH_CONNECTIONS=pgsql,redshift`). `/up` returns non-200 when a
+  configured connection is unreachable.
 - Opt-in JSON exception envelope (`ApiExceptions::register()`).
 - `csatf:baseline:install` command and publishable `config/csatf-baseline.php`.
