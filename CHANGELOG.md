@@ -6,6 +6,8 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-25
+
 ### Added
 - `SecurityHeaders` middleware (auto-appended globally, config-gated).
 - `AppVersion` resolver + `csatf:version:stamp` command + `@appVersion` Blade
@@ -19,3 +21,7 @@ All notable changes to this package are documented here. This project adheres to
   configured connection is unreachable.
 - Opt-in JSON exception envelope (`ApiExceptions::register()`).
 - `csatf:baseline:install` command and publishable `config/csatf-baseline.php`.
+- Test suite (Pest + Orchestra Testbench).
+
+[Unreleased]: https://github.com/csatf/laravel-app-baseline/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/csatf/laravel-app-baseline/releases/tag/v1.0.0
