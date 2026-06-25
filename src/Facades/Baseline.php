@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void authorizeAdminUsing(callable $resolver)
  * @method static bool isAdmin(mixed $user)
  *
- * @see \Csatf\LaravelBaseline\Baseline
+ * @see BaselineManager
  */
 class Baseline extends Facade
 {

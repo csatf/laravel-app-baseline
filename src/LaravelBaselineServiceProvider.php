@@ -21,7 +21,7 @@ class LaravelBaselineServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/csatf-baseline.php', 'csatf-baseline');
 
-        $this->app->singleton(Baseline::class, static fn (): Baseline => new Baseline());
+        $this->app->singleton(Baseline::class, static fn (): Baseline => new Baseline);
     }
 
     public function boot(): void
@@ -43,7 +43,7 @@ class LaravelBaselineServiceProvider extends ServiceProvider
 
         Blade::directive(
             'appVersion',
-            static fn (): string => "<?php echo e(\\Csatf\\LaravelBaseline\\Support\\AppVersion::current()); ?>"
+            static fn (): string => '<?php echo e(\\Csatf\\LaravelBaseline\\Support\\AppVersion::current()); ?>'
         );
     }
 

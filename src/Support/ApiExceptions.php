@@ -30,17 +30,19 @@ class ApiExceptions
 {
     public static function register(Exceptions $exceptions): void
     {
-        $exceptions->render(static function (Throwable $e, Request $request): ?JsonResponse {
-            if (! $request->expectsJson()) {
-                return null;
-            }
-
-            return self::toResponse($e);
-        });
+        $exceptions->render(static fn (Throwable $e, Request $request): ?JsonResponse => self::handle($e, $request));
     }
 
-    protected static function toResponse(Throwable $e): JsonResponse
+    /**
+     * Render a Throwable as the standard JSON envelope, or null for non-JSON
+     * requests (so they fall through to Laravel's default handling).
+     */
+    public static function handle(Throwable $e, Request $request): ?JsonResponse
     {
+        if (! $request->expectsJson()) {
+            return null;
+        }
+
         [$status, $message, $errors] = self::map($e);
 
         $payload = ['message' => $message];
