@@ -13,7 +13,8 @@ return [
     'security_headers' => [
         'enabled' => env('CSATF_SECURITY_HEADERS', true),
         'hsts' => env('CSATF_HSTS', true),
-        'hsts_max_age' => (int) env('CSATF_HSTS_MAX_AGE', 86400),
+        'hsts_max_age' => (int) env('CSATF_HSTS_MAX_AGE', 31536000),
+        'hsts_include_subdomains' => env('CSATF_HSTS_INCLUDE_SUBDOMAINS', true),
         'frame_options' => env('CSATF_FRAME_OPTIONS', 'SAMEORIGIN'),
         'referrer_policy' => 'strict-origin-when-cross-origin',
         'permissions_policy' => 'camera=(), microphone=(), geolocation=()',

@@ -28,6 +28,25 @@ it('emits HSTS only on an https app url', function () {
     expect(runSecurityHeaders()->headers->get('Strict-Transport-Security'))->toContain('max-age=');
 });
 
+it('includes a one-year max-age and includeSubDomains by default', function () {
+    config(['app.url' => 'https://example.test']);
+
+    expect(runSecurityHeaders()->headers->get('Strict-Transport-Security'))
+        ->toBe('max-age=31536000; includeSubDomains');
+});
+
+it('omits includeSubDomains when disabled', function () {
+    config([
+        'app.url' => 'https://example.test',
+        'csatf-baseline.security_headers.hsts_include_subdomains' => false,
+    ]);
+
+    $value = runSecurityHeaders()->headers->get('Strict-Transport-Security');
+
+    expect($value)->toBe('max-age=31536000')
+        ->and($value)->not->toContain('includeSubDomains');
+});
+
 it('does nothing when disabled', function () {
     config(['csatf-baseline.security_headers.enabled' => false]);
 
