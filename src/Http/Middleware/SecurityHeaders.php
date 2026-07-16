@@ -32,7 +32,13 @@ class SecurityHeaders
         }
 
         if (($config['hsts'] ?? true) && str_starts_with((string) config('app.url'), 'https://')) {
-            $headers->set('Strict-Transport-Security', 'max-age='.(int) ($config['hsts_max_age'] ?? 86400));
+            $value = 'max-age='.(int) ($config['hsts_max_age'] ?? 31536000);
+
+            if ($config['hsts_include_subdomains'] ?? true) {
+                $value .= '; includeSubDomains';
+            }
+
+            $headers->set('Strict-Transport-Security', $value);
         }
 
         return $response;

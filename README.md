@@ -28,9 +28,12 @@ steps below.
 ### 1. Security headers
 `SecurityHeaders` middleware is appended to the global stack automatically (so it
 also covers Filament), emitting `X-Content-Type-Options`, `X-Frame-Options`,
-`Referrer-Policy`, `Permissions-Policy`, and — on an `https` `app.url` — HSTS. CSP
-is left `null` by default; set `CSATF_CSP` (report-only first) per app. Disable
-entirely with `CSATF_SECURITY_HEADERS=false`.
+`Referrer-Policy`, `Permissions-Policy`, and — on an `https` `app.url` — HSTS.
+HSTS defaults to `max-age=31536000; includeSubDomains` (one year). Tune with
+`CSATF_HSTS_MAX_AGE`, and drop the sub-domain directive with
+`CSATF_HSTS_INCLUDE_SUBDOMAINS=false` if a sub-domain can't serve HTTPS. CSP is
+left `null` by default; set `CSATF_CSP` (report-only first) per app. Disable
+security headers entirely with `CSATF_SECURITY_HEADERS=false`.
 
 ### 2. App version
 `Csatf\LaravelBaseline\Support\AppVersion::current()` resolves the running version

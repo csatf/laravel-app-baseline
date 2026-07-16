@@ -6,6 +6,18 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+### Changed
+- HSTS is now emitted as `max-age=31536000; includeSubDomains` by default
+  (previously `max-age=86400`, no sub-domain directive). This strengthens the
+  header to a one-year policy covering sub-domains, matching common pen-test
+  remediation guidance. Consuming apps pick this up on their next
+  `composer update`; override via `CSATF_HSTS_MAX_AGE` /
+  `CSATF_HSTS_INCLUDE_SUBDOMAINS=false`.
+
+### Added
+- `hsts_include_subdomains` config key (`CSATF_HSTS_INCLUDE_SUBDOMAINS`, default
+  `true`) to control the `includeSubDomains` HSTS directive.
+
 ## [1.0.0] - 2026-06-25
 
 ### Added
