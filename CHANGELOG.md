@@ -6,6 +6,17 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+### Fixed
+- Dashboard gates (`viewPulse`, `viewTelescope`, `viewApiDocs`) are now
+  registered in an `app booted()` callback instead of directly in `boot()`.
+  Packages such as Laravel Pulse define their own `viewPulse` default in their
+  `boot()`, and — booting after this package — would overwrite the baseline's
+  admin gate, locking admins out (the gate fell back to Pulse's
+  `environment('local')` default, i.e. denied in staging/production). Deferring
+  to `booted()` makes the baseline authoritative regardless of provider order.
+
+## [1.1.0] - 2026-07-16
+
 ### Changed
 - HSTS is now emitted as `max-age=31536000; includeSubDomains` by default
   (previously `max-age=86400`, no sub-domain directive). This strengthens the
