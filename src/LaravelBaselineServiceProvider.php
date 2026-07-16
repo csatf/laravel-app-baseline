@@ -37,7 +37,10 @@ class LaravelBaselineServiceProvider extends ServiceProvider
             ]);
         }
 
-        $this->registerDashboardGates();
+        // Defer gate definitions until every provider has booted, so the
+        // baseline's admin gates win over dashboard packages (Pulse, Telescope)
+        // that define their own viewPulse/viewTelescope defaults during boot().
+        $this->app->booted(fn () => $this->registerDashboardGates());
         $this->registerSecurityHeaders();
         $this->registerHealthChecks();
 
