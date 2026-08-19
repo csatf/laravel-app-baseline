@@ -7,6 +7,10 @@ with `csatf/laravel-devtools` (dev tooling) — this one ships to production.
 Everything is config-gated and degrades safely; nothing changes response shapes
 unless you opt in.
 
+## Requirements
+
+PHP 8.2+, Laravel 11 / 12 / 13.
+
 ## Install
 
 ```json

@@ -6,6 +6,15 @@ All notable changes to this package are documented here. This project adheres to
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-20
+
+### Added
+- Laravel 13 support: all seven `illuminate/*` constraints widened to
+  `^11.0 || ^12.0 || ^13.0`, and `orchestra/testbench` to
+  `^9.0 || ^10.0 || ^11.0`.
+- Verified against Laravel 13.26.1 / Testbench 11.2.0 / PHP 8.4: all 24 tests
+  pass and PHPStan reports no errors. No source changes were required.
+
 ### Fixed
 - Dashboard gates (`viewPulse`, `viewTelescope`, `viewApiDocs`) are now
   registered in an `app booted()` callback instead of directly in `boot()`.
